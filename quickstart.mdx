@@ -1,86 +1,83 @@
 ---
 title: 'Quickstart'
-description: 'Start building awesome documentation in under 5 minutes'
+description: 'Start applying custom styles'
 ---
 
-## Setup your development
+## Authentication
 
-Learn how to update your docs locally and deploy them to the public.
+API keys are associated with a project in your organization. Include the API key in the header of your request.
 
-### Edit and preview
+```
+curl -X GET https://api.vaeroapi.com/[endpoint] \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/json"
+```
 
-<AccordionGroup>
-  <Accordion icon="github" title="Clone your docs locally">
-    During the onboarding process, we created a repository on your Github with
-    your docs content. You can find this repository on our
-    [dashboard](https://dashboard.mintlify.com). To clone the repository
-    locally, follow these
-    [instructions](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
-    in your terminal.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Preview changes">
-    Previewing helps you make sure your changes look as intended. We built a
-    command line interface to render these changes locally. 1. Install the
-    [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the
-    documentation changes locally with this command: ``` npm i -g mintlify ```
-    2. Run the following command at the root of your documentation (where
-    `mint.json` is): ``` mintlify dev ```
-  </Accordion>
-</AccordionGroup>
+## Upload files for training
 
-### Deploy your changes
+Upload one or more files of your sample text for which you want to copy the style.
 
-<AccordionGroup>
+The files are text only. If you have documents in other formats, convert them to text first.
 
-<Accordion icon="message-bot" title="Install our Github app">
-  Our Github app automatically deploys your changes to your docs site, so you
-  don't need to manage deployments yourself. You can find the link to install on
-  your [dashboard](https://dashboard.mintlify.com). Once the bot has been
-  successfully installed, there should be a check mark next to the commit hash
-  of the repo.
-</Accordion>
-<Accordion icon="rocket" title="Push your changes">
-  [Commit and push your changes to
-  Git](https://docs.github.com/en/get-started/using-git/pushing-commits-to-a-remote-repository#about-git-push)
-  for your changes to update in your docs site. If you push and don't see that
-  the Github app successfully deployed your changes, you can also manually
-  update your docs through our [dashboard](https://dashboard.mintlify.com).
-</Accordion>
+Preferably, each file should represent one document, such as one blog post, one report, one email, etc. If you have want to train on multiple documents, upload them as separate files instead of mixing the content in one file.
 
-</AccordionGroup>
+```
+curl -X POST "https://api.vaeroapi.com/files" \
+  -F "file=@/path/to/your/file" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: multipart/form-data"
+```
 
-## Update your docs
+The response will include the file IDs to use for fine-tuning.
 
-Add content directly in your files with MDX syntax and React components. You can use any of our components, or even build your own.
+## Fine-tune your model
 
-<CardGroup>
+Fine-tune your model based on one or more of your uploaded files. The model will learn to write in the style of those files. Using files with a consistent style leads to the best results.
 
-<Card title="Style Your Docs" icon="paintbrush" href="/settings/global">
-  Add flair to your docs with personalized branding.
-</Card>
+The `model` is the model to fine-tune. `base_model` is the base AI whose output you want to style (for example, you may want to style outputs from gpt4-o or from Claude Sonnet). The `num_examples` is the number of examples used to fine-tune the model. More examples provides more learning.
 
-<Card
-  title="Add API Endpoints"
-  icon="square-code"
-  href="/api-playground/configuration"
->
-  Implement your OpenAPI spec and enable API user interaction.
-</Card>
+```
+curl -X POST "https://api.vaeroapi.com/fine_tuning/jobs" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "model": "llama-3.1-70b",
+        "base_model": "gpt-4o-2024-08-06",
+        "training_files": ["file_id_1", "file_id_2"],
+        "suffix": "optional_suffix",
+        "num_examples": 200
+      }'
+```
 
-<Card
-  title="Integrate Analytics"
-  icon="chart-mixed"
-  href="/analytics/supported-integrations"
->
-  Draw insights from user interactions with your documentation.
-</Card>
+The response will include a fine-tuned model ID, which you will use to identify the model for inference.
 
-<Card
-  title="Host on a Custom Domain"
-  icon="browser"
-  href="/settings/custom-domain/subdomain"
->
-  Keep your docs on your own website's subdomain.
-</Card>
+Fine-tuning can sometimes complete in minutes, but may take up to 24 hours based on load. The status of the job will change from 'queued' to 'completed' when finished.
 
-</CardGroup>
+## Styling
+
+Submit the output of your base AI model to the style transform endpoint. Include the parameter `model` with the ID of your fine-tuned model. Include the parameter `message` as a string that contains the text to style.
+
+No conversational turns or instructions to the AI need to be submitted.
+
+```
+curl -X POST "https://api.vaeroapi.com/style/transform" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -d '{
+        "message": "your_text_here",
+        "model": "your_fine_tuned_model_id"
+      }'
+```
+
+The styled content is at `response["choices"][0]["message"]["content"]`
+
+## Evaluating the results
+
+The response also includes quality metrics. `response["histogram_delta"]["vocab"]` includes the metrics from the comparison of the vocabulary (words used) in the ground truth versus the original output and the styled output. This comparison is based on the rates of appearance of the 100 most common words in the English language.
+
+`response["histogram_delta"]["sentence_length"]` includes the metrics from the comparison of the sentence lengths (words per sentence) in the ground truth versus the original output and the styled output. This comparison is based on the rates at which each sentence length appears.
+
+The field `euclidean_delta_percent` compares the Euclidean distance of the original output to the ground truth and the styled output to the ground truth, and provides the percentage difference in these distances.
+
+The field `manhattan_delta_percent` compares the Manhattan distance of the original output to the ground truth and the styled output to the ground truth, and provides the percentage difference in these distances.
+
+In both cases, positive numbers show that the styled output is closer to the ground truth than the original output.
