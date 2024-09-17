@@ -1,0 +1,20 @@
+---
+title: Fine-tuning
+description: 'Fine-tune a model to write in a style'
+---
+
+## Basics
+
+Fine-tuning will create an AI model that matches a writing style. The fine-tuning endpoint requires listing one or more files to use to train the AI. You can use as many files as you want.
+
+Using files with a consistent style leads to the best results.
+
+The `model` is the model to fine-tune. 70B models perform better than 8B models, though they take longer to train and style and are more costly.
+
+`base_model` is the base AI whose output you want to style (for example, you may want to style outputs from gpt4-o or from Claude Sonnet).
+
+The `num_examples` is the number of examples used to fine-tune the model. More examples provides more learning. 200 examples is a reasonable default to balance quality and cost.
+
+The response will include a fine-tuned model ID, which you will use to identify the model for inference.
+
+Fine-tuning can sometimes complete in minutes, but may take up to 24 hours based on load. The status of the job will change from 'queued' to 'completed' when finished.

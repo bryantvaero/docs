@@ -58,6 +58,8 @@ Submit the output of your base AI model to the style transform endpoint. Include
 
 No conversational turns or instructions to the AI need to be submitted.
 
+If you have a large block of multi-paragraph text, include all of it in a single API call. You don't need to segment the text into separate calls.
+
 ```
 curl -X POST "https://api.vaeroapi.com/style/transform" \
   -H "Content-Type: application/json" \
@@ -79,5 +81,7 @@ The response also includes quality metrics. `response["histogram_delta"]["vocab"
 The field `euclidean_delta_percent` compares the Euclidean distance of the original output to the ground truth and the styled output to the ground truth, and provides the percentage difference in these distances.
 
 The field `manhattan_delta_percent` compares the Manhattan distance of the original output to the ground truth and the styled output to the ground truth, and provides the percentage difference in these distances.
+
+The Euclidean and Manhattan distances are computed based on the relevant histograms.
 
 In both cases, positive numbers show that the styled output is closer to the ground truth than the original output.

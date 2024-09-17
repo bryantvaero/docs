@@ -1,0 +1,14 @@
+---
+title: Files
+description: 'Upload files of writing samples for fine-tuning'
+---
+
+## Basics
+
+Vaero file endpoints allow you to upload one or more files. These files contain the sample text on which you can fine-tune to match the style.
+
+The files are text only. If you have documents in other formats, convert them to text first.
+
+Preferably, each file should represent one document, such as one blog post, one report, one email, etc. If you have want to train on multiple documents, upload them as separate files instead of mixing the content in one file. For example, if you want to fine-tune on 5 blog posts, upload these as 5 separate files.
+
+When a file is uploaded, the response includes the file ID to use for the fine-tuning endpoint. It is also possible to list your uploaded files.

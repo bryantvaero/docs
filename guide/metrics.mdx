@@ -1,0 +1,18 @@
+---
+title: Metrics
+description: 'Quality metrics to evaluate the results'
+---
+
+## Basics
+
+Responses from the style transform endpoint include quality metrics. `response["histogram_delta"]["vocab"]` includes the metrics from the comparison of the vocabulary (words used) in the ground truth versus the original output and the styled output. This comparison is based on the rates of appearance of the 100 most common words in the English language.
+
+`response["histogram_delta"]["sentence_length"]` includes the metrics from the comparison of the sentence lengths (words per sentence) in the ground truth versus the original output and the styled output. This comparison is based on the rates at which each sentence length appears.
+
+The field `euclidean_delta_percent` compares the Euclidean distance of the original output to the ground truth and the styled output to the ground truth, and provides the percentage difference in these distances.
+
+The field `manhattan_delta_percent` compares the Manhattan distance of the original output to the ground truth and the styled output to the ground truth, and provides the percentage difference in these distances.
+
+The Euclidean and Manhattan distances are computed based on the relevant histograms.
+
+In both cases, positive numbers show that the styled output is closer to the ground truth than the original output.

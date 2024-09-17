@@ -1,0 +1,16 @@
+---
+title: Styling
+description: 'Transform your AI style'
+---
+
+## Basics
+
+Submit the output of your base AI model to the style transform endpoint to transform it into styled text using your fine-tuned model.
+
+Include the parameter `model` with the ID of your fine-tuned model. Include the parameter `message` as a string that contains the text to style.
+
+No conversational turns or instructions to the AI need to be submitted.
+
+If you have a large block of multi-paragraph text, include all of it in a single API call. You don't need to segment the text into separate calls.
+
+The styled content is at `response["choices"][0]["message"]["content"]`
