@@ -1,192 +1,1031 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.0.0",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
+    "title": "Vaero API",
+    "version": "1.0.0",
+    "description": "API for file uploads to Vaero platform."
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
+      "url": "https://api.vaeroapi.com",
+      "description": "Production server"
     }
   ],
   "paths": {
-    "/plants": {
+    "/files": {
+      "post": {
+        "tags": ["Files"],
+        "summary": "Upload file",
+        "description": "Upload a file that can be used across various endpoints. Files must be text only.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["file", "purpose"],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The file object (not file name) to be uploaded."
+                  },
+                  "purpose": {
+                    "type": "string",
+                    "description": "The intended purpose of the uploaded file, must be 'fine-tune'.",
+                    "example": "fine-tune"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful file upload. Returns the uploaded file object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Auto-assigned UUID file identifier.",
+                      "example": "file-abc123"
+                    },
+                    "object": {
+                      "type": "string",
+                      "description": "Object type, which will always be 'file'.",
+                      "example": "file"
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "description": "Size of the uploaded file in bytes.",
+                      "example": 120000
+                    },
+                    "created_at": {
+                      "type": "integer",
+                      "description": "Unix timestamp for when the file was created.",
+                      "example": 1677610602
+                    },
+                    "filename": {
+                      "type": "string",
+                      "description": "The name of the uploaded file.",
+                      "example": "mydata.txt"
+                    },
+                    "purpose": {
+                      "type": "string",
+                      "description": "The purpose of the uploaded file, must be 'fine-tune'.",
+                      "example": "fine-tune"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "tags": ["Files"],
+        "summary": "List files",
+        "description": "Returns a list of files that belong to the user's organization.",
+        "responses": {
+          "200": {
+            "description": "A list of File objects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Auto-assigned UUID file identifier.",
+                            "example": "file-abc123"
+                          },
+                          "object": {
+                            "type": "string",
+                            "description": "Object type, which will always be 'file'.",
+                            "example": "file"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "description": "Size of the uploaded file in bytes.",
+                            "example": 175
+                          },
+                          "created_at": {
+                            "type": "integer",
+                            "description": "Unix timestamp for when the file was created.",
+                            "example": 1613677385
+                          },
+                          "filename": {
+                            "type": "string",
+                            "description": "The name of the uploaded file.",
+                            "example": "salesOverview.txt"
+                          },
+                          "purpose": {
+                            "type": "string",
+                            "description": "The purpose of the uploaded file.",
+                            "example": "fine-tune"
+                          }
+                        }
+                      }
+                    },
+                    "object": {
+                      "type": "string",
+                      "description": "Object type, which will always be 'list'.",
+                      "example": "list"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/files/{file_id}": {
+      "get": {
+        "tags": ["Files"],
+        "summary": "Retrieve File",
+        "description": "Returns information about one specific file.",
         "parameters": [
           {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
+            "name": "file_id",
+            "in": "path",
+            "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
+              "type": "string"
+            },
+            "description": "The ID of the file to use for this request."
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "The File Object matching the specified ID.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Auto-assigned UUID file identifier.",
+                      "example": "file-abc123"
+                    },
+                    "object": {
+                      "type": "string",
+                      "description": "Object type, which will always be 'file'.",
+                      "example": "file"
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "description": "Size of the uploaded file in bytes.",
+                      "example": 120000
+                    },
+                    "created_at": {
+                      "type": "integer",
+                      "description": "Unix timestamp for when the file was created.",
+                      "example": 1677610602
+                    },
+                    "filename": {
+                      "type": "string",
+                      "description": "The name of the uploaded file.",
+                      "example": "mydata.txt"
+                    },
+                    "purpose": {
+                      "type": "string",
+                      "description": "The purpose of the uploaded file.",
+                      "example": "fine-tune"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "File not found. The specified file ID does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message explaining the issue.",
+                      "example": "File not found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Files"],
+        "summary": "Delete File",
+        "description": "Deletes a file identified by the provided file ID.",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ID of the file to delete."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File successfully deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Auto-assigned UUID file identifier.",
+                      "example": "file-abc123"
+                    },
+                    "object": {
+                      "type": "string",
+                      "description": "Object type, which will always be 'file'.",
+                      "example": "file"
+                    },
+                    "deleted": {
+                      "type": "boolean",
+                      "description": "Indicates whether the file was successfully deleted.",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "File not found. The specified file ID does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message explaining the issue.",
+                      "example": "File not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The request was missing authentication or contained invalid credentials.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message explaining the issue.",
+                      "example": "Invalid API key."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/files/{file_id}/content": {
+      "get": {
+        "tags": ["Files"],
+        "summary": "Retrieve File Content",
+        "description": "Returns the contents of the specified file.",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ID of the file to retrieve content for."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The file content.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "description": "The raw content of the file."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "File not found. The specified file ID does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message explaining the issue.",
+                      "example": "File not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The request was missing authentication or contained invalid credentials.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message explaining the issue.",
+                      "example": "Invalid API key."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/fine_tuning/jobs": {
+      "post": {
+        "tags": ["Fine Tuning"],
+        "summary": "Create fine-tuning job",
+        "description": "Creates a fine-tuning job which begins the process of creating a new model from a given dataset. The response includes details of the enqueued job, including job status and the name of the fine-tuned model once complete.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["model", "base_model", "training_files"],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "The name of the model to fine-tune. Options: 'llama-3.1-8b' or 'llama-3.1-70b'.",
+                    "example": "llama-3.1-70b"
+                  },
+                  "base_model": {
+                    "type": "string",
+                    "description": "The name of the base model whose output will be styled. Options: 'gpt-4o', 'gpt-4o-2024-05-13', 'gpt-4o-2024-08-06', 'claude-3-5-sonnet-20240620', 'claude-3-opus-20240229'.",
+                    "example": "gpt-4o"
+                  },
+                  "training_files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of IDs of uploaded files to use for training. All files must be text-only.",
+                    "example": ["file-abc123", "file-abc124"]
+                  },
+                  "suffix": {
+                    "type": "string",
+                    "description": "A string of up to 36 characters that will be added to your fine-tuned model name. For example, a suffix of 'custom-model-name' would produce a model name like 'ftm:llama-3.1-70b:custom-model-name:0b5ace7e-ffb2-43cf-8a4d-0af17bc2b1d1'.",
+                    "nullable": true,
+                    "example": "custom-model-name"
+                  },
+                  "num_examples": {
+                    "type": "integer",
+                    "description": "The number of training examples to use for training. Higher numbers increase quality, but also increase cost.",
+                    "example": 200,
+                    "default": 200
+                  },
+                  "maintain_length": {
+                    "type": "boolean",
+                    "description": "If true, the model will be trained to maintain consistency of length, where the styled output is approximately the same length as the input.",
+                    "example": true,
+                    "default": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A fine-tuning job object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "description": "The type of the object, always 'fine_tuning.job'.",
+                      "example": "fine_tuning.job"
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "The ID of the fine-tuning job.",
+                      "example": "ftjob-abc123"
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "The model being fine-tuned.",
+                      "example": "llama-3.1-70b"
+                    },
+                    "base_model": {
+                      "type": "string",
+                      "description": "The name of the base model whose output is to be styled.",
+                      "example": "gpt-4o"
+                    },
+                    "created_at": {
+                      "type": "integer",
+                      "description": "The Unix timestamp for when the job was created.",
+                      "example": 1721764800
+                    },
+                    "fine_tuned_model": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "The name of the fine-tuned model.",
+                      "example": null
+                    },
+                    "organization_id": {
+                      "type": "string",
+                      "description": "The organization ID associated with this fine-tuning job.",
+                      "example": "org-123"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "The current status of the job.",
+                      "example": "queued"
+                    },
+                    "training_files": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Array of file IDs used for training.",
+                      "example": ["file-abc123", "file-abc124"]
+                    }
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Unexpected error",
+            "description": "Bad request. Possibly due to invalid input data.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message explaining the issue.",
+                      "example": "Invalid model name."
+                    }
+                  }
                 }
               }
             }
           }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
         },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": ["Fine Tuning"],
+        "summary": "List fine-tuning jobs",
+        "description": "Lists your organization’s fine-tuning jobs.",
         "responses": {
           "200": {
-            "description": "plant response",
+            "description": "A list of fine-tuning job objects.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Plant"
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "description": "Type of the response, which will always be 'list'.",
+                      "example": "list"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "object": {
+                            "type": "string",
+                            "description": "The type of the object, always 'fine_tuning.job'.",
+                            "example": "fine_tuning.job"
+                          },
+                          "id": {
+                            "type": "string",
+                            "description": "Auto-assigned UUID of the fine-tuning job.",
+                            "example": "ftjob-abc123"
+                          },
+                          "model": {
+                            "type": "string",
+                            "description": "The model being fine-tuned.",
+                            "example": "llama-3.1-70b"
+                          },
+                          "base_model": {
+                            "type": "string",
+                            "description": "The name of the base model whose output is to be styled.",
+                            "example": "gpt-4o"
+                          },
+                          "created_at": {
+                            "type": "integer",
+                            "description": "Unix timestamp for when the job was created.",
+                            "example": 1721764800
+                          },
+                          "fine_tuned_model": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "The name of the fine-tuned model.",
+                            "example": null
+                          },
+                          "organization_id": {
+                            "type": "string",
+                            "description": "ID of the organization associated with the job.",
+                            "example": "org-123"
+                          },
+                          "status": {
+                            "type": "string",
+                            "description": "Current status of the job.",
+                            "example": "queued"
+                          },
+                          "training_files": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "Array of file IDs used for training.",
+                            "example": ["file-abc123", "file-abc124"]
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
           },
-          "400": {
-            "description": "unexpected error",
+          "401": {
+            "description": "Unauthorized. The request was missing authentication or contained invalid credentials.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message explaining the issue.",
+                      "example": "Invalid API key."
+                    }
+                  }
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+    "/fine_tuning/jobs/{fine_tuning_job_id}": {
+      "get": {
+        "tags": ["Fine Tuning"],
+        "summary": "Retrieve fine-tuning job",
+        "description": "Get info about a fine-tuning job by its ID.",
         "parameters": [
           {
-            "name": "id",
+            "name": "fine_tuning_job_id",
             "in": "path",
-            "description": "ID of plant to delete",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
+              "type": "string"
+            },
+            "description": "The ID of the fine-tuning job."
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
+          "200": {
+            "description": "A fine-tuning job object.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "type": "object",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "description": "The type of the object, always 'fine_tuning.job'.",
+                      "example": "fine_tuning.job"
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "The ID of the fine-tuning job.",
+                      "example": "ftjob-abc123"
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "The model being fine-tuned.",
+                      "example": "llama-3.1-70b"
+                    },
+                    "base_model": {
+                      "type": "string",
+                      "description": "The name of the base model whose output is to be styled.",
+                      "example": "gpt-4o"
+                    },
+                    "created_at": {
+                      "type": "integer",
+                      "description": "Unix timestamp for when the job was created.",
+                      "example": 1721764800
+                    },
+                    "fine_tuned_model": {
+                      "type": "string",
+                      "description": "The name of the fine-tuned model.",
+                      "example": "ftm:llama-3.1-70b:custom-model-name:0b5ace7e-ffb2-43cf-8a4d-0af17bc2b1d1"
+                    },
+                    "organization_id": {
+                      "type": "string",
+                      "description": "The organization ID associated with this fine-tuning job.",
+                      "example": "org-123"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "The current status of the job.",
+                      "example": "succeeded"
+                    },
+                    "training_files": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Array of file IDs used for training.",
+                      "example": ["file-abc123", "file-abc124"]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fine-tuning job not found. The specified job ID does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message explaining the issue.",
+                      "example": "Fine-tuning job not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The request was missing authentication or contained invalid credentials.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message explaining the issue.",
+                      "example": "Invalid API key."
+                    }
+                  }
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/style/transform": {
+      "post": {
+        "tags": ["Styling"],
+        "summary": "Style transform",
+        "description": "Outputs a style transformation from the model for the input.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["message", "model"],
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "description": "Input text to be styled. The token limit is 128k.",
+                    "example": "The quick brown fox jumped over the lazy dog"
+                  },
+                  "model": {
+                    "type": "string",
+                    "description": "ID of the fine-tuned model to use.",
+                    "example": "ftm:llama-3.1-70b:custom-model-name:0b5ace7e-ffb2-43cf-8a4d-0af17bc2b1d1"
+                  },
+                  "temperature": {
+                    "type": "number",
+                    "nullable": true,
+                    "description": "Sampling temperature, between 0 and 2. Higher values make output more random. 0 is recommended for most use cases.",
+                    "default": 0,
+                    "example": 0.8
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A chat completion object.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "ID of the chat completion.",
+                      "example": "chatcmpl-123"
+                    },
+                    "object": {
+                      "type": "string",
+                      "description": "Type of the object, always 'chat.completion'.",
+                      "example": "chat.completion"
+                    },
+                    "created": {
+                      "type": "integer",
+                      "description": "Unix timestamp for when the completion was created.",
+                      "example": 1677652288
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "Model used for the completion.",
+                      "example": "ftm:llama-3.1-70b:custom-model-name:0b5ace7e-ffb2-43cf-8a4d-0af17bc2b1d1"
+                    },
+                    "system_fingerprint": {
+                      "type": "string",
+                      "description": "System fingerprint.",
+                      "example": "fp_44709d6fcb"
+                    },
+                    "choices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "index": {
+                            "type": "integer",
+                            "description": "Index of the choice.",
+                            "example": 0
+                          },
+                          "message": {
+                            "type": "object",
+                            "properties": {
+                              "role": {
+                                "type": "string",
+                                "description": "Role of the message author.",
+                                "example": "assistant"
+                              },
+                              "content": {
+                                "type": "string",
+                                "description": "The generated message content.",
+                                "example": "The lazy dog was vaulted by a brown fox with the zoomies."
+                              }
+                            }
+                          },
+                          "finish_reason": {
+                            "type": "string",
+                            "description": "The reason why the generation stopped.",
+                            "example": "stop"
+                          }
+                        }
+                      }
+                    },
+                    "usage": {
+                      "type": "object",
+                      "properties": {
+                        "prompt_tokens": {
+                          "type": "integer",
+                          "description": "Number of tokens in the prompt.",
+                          "example": 9
+                        },
+                        "completion_tokens": {
+                          "type": "integer",
+                          "description": "Number of tokens in the completion.",
+                          "example": 12
+                        },
+                        "total_tokens": {
+                          "type": "integer",
+                          "description": "Total number of tokens used.",
+                          "example": 21
+                        }
+                      }
+                    },
+                    "histogram_delta": {
+                      "type": "object",
+                      "properties": {
+                        "vocab": {
+                          "type": "object",
+                          "properties": {
+                            "manhattan_delta": {
+                              "type": "number",
+                              "description": "The delta between the Manhattan distances of the input and transformed text compared to the training files of the fine tuned model, based on the histogram of words used (for the 100 most common English words).",
+                              "example": 0.06000384627296934
+                            },
+                            "manhattan_delta_percent": {
+                              "type": "number",
+                              "description": "The Manhattan delta as a percent.",
+                              "example": 0.1928554707995673
+                            },
+                            "euclidean_delta": {
+                              "type": "number",
+                              "description": "The delta between the Euclidean distances of the input and transformed text compared to the training files of the fine tuned model, based on the histogram of words used (for the 100 most common English words).",
+                              "example": 0.009327618326673372
+                            },
+                            "euclidean_delta_percent": {
+                              "type": "number",
+                              "description": "The Euclidean delta as a percent.",
+                              "example": 0.17986237403362965
+                            },
+                            "personalized_manhattan_distance": {
+                              "type": "number",
+                              "description": "The Manhattan distance between the transformed text and the training files of the fine tuned model, based on the histogram of words used (for the 100 most common English words).",
+                              "example": 0.3111337522560131
+                            },
+                            "personalized_euclidean_distance": {
+                              "type": "number",
+                              "description": "The Euclidean distance between the transformed text and the training files of the fine tuned model, based on the histogram of words used (for the 100 most common English words).",
+                              "example": 0.051859753196237396
+                            },
+                            "unpersonalized_manhattan_distance": {
+                              "type": "number",
+                              "description": "The Manhattan distance between the input text and the training files of the fine tuned model, based on the histogram of words used (for the 100 most common English words).",
+                              "example": 0.3711375985289824
+                            },
+                            "unpersonalized_euclidean_distance": {
+                              "type": "number",
+                              "description": "The Euclidean distance between the input text and the training files of the fine tuned model, based on the histogram of words used (for the 100 most common English words).",
+                              "example": 0.06118737152291077
+                            }
+                          }
+                        },
+                        "sentence_length": {
+                          "type": "object",
+                          "properties": {
+                            "manhattan_delta": {
+                              "type": "number",
+                              "description": "The delta between the Manhattan distances of the input and transformed text compared to the training files of the fine tuned model, based on the histogram of sentence lengths.",
+                              "example": 0.06000384627296934
+                            },
+                            "manhattan_delta_percent": {
+                              "type": "number",
+                              "description": "The Manhattan delta as a percent.",
+                              "example": 0.1928554707995673
+                            },
+                            "euclidean_delta": {
+                              "type": "number",
+                              "description": "The delta between the Euclidean distances of the input and transformed text compared to the training files of the fine tuned model, based on the histogram of sentence lengths.",
+                              "example": 0.009327618326673372
+                            },
+                            "euclidean_delta_percent": {
+                              "type": "number",
+                              "description": "The Euclidean delta as a percent.",
+                              "example": 0.17986237403362965
+                            },
+                            "personalized_manhattan_distance": {
+                              "type": "number",
+                              "description": "The Manhattan distance between the transformed text and the training files of the fine tuned model, based on the histogram of sentence lengths.",
+                              "example": 0.3111337522560131
+                            },
+                            "personalized_euclidean_distance": {
+                              "type": "number",
+                              "description": "The Euclidean distance between the transformed text and the training files of the fine tuned model, based on the histogram of sentence lengths.",
+                              "example": 0.051859753196237396
+                            },
+                            "unpersonalized_manhattan_distance": {
+                              "type": "number",
+                              "description": "The Manhattan distance between the input text and the training files of the fine tuned model, based on the histogram of sentence lengths.",
+                              "example": 0.3711375985289824
+                            },
+                            "unpersonalized_euclidean_distance": {
+                              "type": "number",
+                              "description": "The Euclidean distance between the input text and the training files of the fine tuned model, based on the histogram of sentence lengths.",
+                              "example": 0.06118737152291077
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. Possibly due to invalid input data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message explaining the issue.",
+                      "example": "Invalid input data."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The request was missing authentication or contained invalid credentials.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message explaining the issue.",
+                      "example": "Invalid API key."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     }
   },
   "components": {
-    "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      }
-    },
     "securitySchemes": {
-      "bearerAuth": {
+      "BearerAuth": {
         "type": "http",
         "scheme": "bearer"
       }

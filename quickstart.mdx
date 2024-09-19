@@ -13,7 +13,7 @@ curl -X GET https://api.vaeroapi.com/[endpoint] \
   -H "Content-Type: application/json"
 ```
 
-## Upload files for training
+## Step 1. Upload files for training
 
 Upload one or more files of your sample text for which you want to copy the style.
 
@@ -30,7 +30,7 @@ curl -X POST "https://api.vaeroapi.com/files" \
 
 The response will include the file IDs to use for fine-tuning.
 
-## Fine-tune your model
+## Step 2. Fine-tune your model
 
 Fine-tune your model based on one or more of your uploaded files. The model will learn to write in the style of those files. Using files with a consistent style leads to the best results.
 
@@ -52,7 +52,7 @@ The response will include a fine-tuned model ID, which you will use to identify 
 
 Fine-tuning can sometimes complete in minutes, but may take up to 24 hours based on load. The status of the job will change from 'queued' to 'completed' when finished.
 
-## Styling
+## Step 3. Styling
 
 Submit the output of your base AI model to the style transform endpoint. Include the parameter `model` with the ID of your fine-tuned model. Include the parameter `message` as a string that contains the text to style.
 
@@ -72,11 +72,11 @@ curl -X POST "https://api.vaeroapi.com/style/transform" \
 
 The styled content is at `response["choices"][0]["message"]["content"]`
 
-## Evaluating the results
+## Step 4. Evaluating the results
 
-The response also includes quality metrics. `response["histogram_delta"]["vocab"]` includes the metrics from the comparison of the vocabulary (words used) in the ground truth versus the original output and the styled output. This comparison is based on the rates of appearance of the 100 most common words in the English language.
+The response also includes quality metrics. `response["histogram_delta"]["vocab"]` includes the metrics from the comparison of the vocabulary (words used) in the training files of the fine-tuned model ("ground truth") versus the original output and the styled output. This comparison is based on the rates of appearance of the 100 most common words in the English language.
 
-`response["histogram_delta"]["sentence_length"]` includes the metrics from the comparison of the sentence lengths (words per sentence) in the ground truth versus the original output and the styled output. This comparison is based on the rates at which each sentence length appears.
+`response["histogram_delta"]["sentence_length"]` includes the metrics from the comparison of the sentence lengths (words per sentence) in the training files of the fine-tuned model versus the original output and the styled output. This comparison is based on the rates at which each sentence length appears.
 
 The field `euclidean_delta_percent` compares the Euclidean distance of the original output to the ground truth and the styled output to the ground truth, and provides the percentage difference in these distances.
 

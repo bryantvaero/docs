@@ -1,15 +1,15 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "Vaero AI Style API",
   "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "dark": "/logo/vaero_logo_dark.png",
+    "light": "/logo/vaero_logo.png"
   },
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
+    "primary": "#2B4FF3",
+    "light": "#31A5F4",
+    "dark": "#0F1022",
     "anchors": {
       "from": "#0D9373",
       "to": "#07C983"
@@ -22,12 +22,13 @@
     }
   ],
   "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "name": "Home",
+    "url": "https://vaeroai.com"
   },
   "tabs": [
     {
       "name": "API Reference",
+      "openapi": "/api-reference/openapi.json",
       "url": "api-reference"
     }
   ],
@@ -47,26 +48,12 @@
       ]
     },
     {
-      "group": "Guide",
+      "group": "Features",
       "pages": [
-        "guide/files",
-        "guide/fine-tuning",
-        "guide/metrics",
-        "guide/styling"
-      ]
-    },
-    {
-      "group": "API Documentation",
-      "pages": [
-        "api-reference/introduction"
-      ]
-    },
-    {
-      "group": "Endpoint Examples",
-      "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "features/files",
+        "features/fine-tuning",
+        "features/metrics",
+        "features/styling"
       ]
     }
   ]
