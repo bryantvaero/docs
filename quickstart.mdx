@@ -36,6 +36,8 @@ Fine-tune your model based on one or more of your uploaded files. The model will
 
 The `model` is the model to fine-tune. `base_model` is the base AI whose output you want to style (for example, you may want to style outputs from gpt4-o or from Claude Sonnet). The `num_examples` is the number of examples used to fine-tune the model. More examples provides more learning.
 
+**Important:** Our recommended settings for most use cases is `llama-3.1-70b` for the `model` parameter and 200 for the `num_examples` parameter.
+
 ```
 curl -X POST "https://api.vaeroapi.com/fine_tuning/jobs" \
   -H "Content-Type: application/json" \
