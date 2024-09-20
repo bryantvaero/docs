@@ -19,7 +19,7 @@ Upload one or more files of your sample text for which you want to copy the styl
 
 The files are text only. If you have documents in other formats, convert them to text first.
 
-Preferably, each file should represent one document, such as one blog post, one report, one email, etc. If you have want to train on multiple documents, upload them as separate files instead of mixing the content in one file.
+Preferably, each file should represent one document, such as one blog post, one report, one email, etc. If you want to train on multiple documents, upload them as separate files instead of mixing the content in one file.
 
 ```
 curl -X POST "https://api.vaeroapi.com/files" \
@@ -32,7 +32,11 @@ The response will include the file IDs to use for fine-tuning.
 
 ## Step 2. Fine-tune your model
 
-Fine-tune your model based on one or more of your uploaded files. The model will learn to write in the style of those files. Using files with a consistent style leads to the best results.
+Fine-tune your model based on one or more of your uploaded files. The model will learn to write in the style of those files.
+
+For best results:
+1. Use files with a consistent style
+2. Use files of the same type that you want to style, e.g. fine-tuning on product guides will create a model that works best on product guides
 
 The `model` is the model to fine-tune. `base_model` is the base AI whose output you want to style (for example, you may want to style outputs from gpt4-o or from Claude Sonnet). The `num_examples` is the number of examples used to fine-tune the model. More examples provides more learning.
 

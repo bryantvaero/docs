@@ -7,7 +7,9 @@ description: 'Fine-tune a model to write in a style'
 
 Fine-tuning will create an AI model that matches a writing style. The fine-tuning endpoint requires listing one or more files to use to train the AI. You can use as many files as you want.
 
-Using files with a consistent style leads to the best results.
+For best results:
+1. Use files with a consistent style
+2. Use files of the same type that you want to style, e.g. fine-tuning on product guides will create a model that works best on product guides
 
 The `model` is the model to fine-tune. 70B models perform better than 8B models, though they take longer to train and style and are more costly.
 
