@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://api.vaeroapi.com",
+      "url": "https://api.vaeroapi.com/v1",
       "description": "Production server"
     }
   ],

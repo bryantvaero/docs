@@ -8,7 +8,7 @@ description: 'Start applying custom styles'
 API keys are associated with a project in your organization. Include the API key in the header of your request.
 
 ```
-curl -X GET https://api.vaeroapi.com/[endpoint] \
+curl -X GET https://api.vaeroapi.com/v1/[endpoint] \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json"
 ```
@@ -22,7 +22,7 @@ The files are text only. If you have documents in other formats, convert them to
 Preferably, each file should represent one document, such as one blog post, one report, one email, etc. If you want to train on multiple documents, upload them as separate files instead of mixing the content in one file.
 
 ```
-curl -X POST "https://api.vaeroapi.com/files" \
+curl -X POST "https://api.vaeroapi.com/v1/files" \
   -F "file=@/path/to/your/file" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: multipart/form-data"
@@ -43,7 +43,7 @@ The `model` is the model to fine-tune. `base_model` is the base AI whose output 
 **Important:** Our recommended settings for most use cases is `llama-3.1-70b` for the `model` parameter and 200 for the `num_examples` parameter.
 
 ```
-curl -X POST "https://api.vaeroapi.com/fine_tuning/jobs" \
+curl -X POST "https://api.vaeroapi.com/v1/fine_tuning/jobs" \
   -H "Content-Type: application/json" \
   -d '{
         "model": "llama-3.1-70b",
@@ -67,7 +67,7 @@ No conversational turns or instructions to the AI need to be submitted.
 If you have a large block of multi-paragraph text, include all of it in a single API call. You don't need to segment the text into separate calls.
 
 ```
-curl -X POST "https://api.vaeroapi.com/style/transform" \
+curl -X POST "https://api.vaeroapi.com/v1/style/transform" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -d '{
