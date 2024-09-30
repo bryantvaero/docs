@@ -822,11 +822,6 @@
                       "description": "Model used for the completion.",
                       "example": "ftm:llama-3.1-70b:custom-model-name:0b5ace7e-ffb2-43cf-8a4d-0af17bc2b1d1"
                     },
-                    "system_fingerprint": {
-                      "type": "string",
-                      "description": "System fingerprint.",
-                      "example": "fp_44709d6fcb"
-                    },
                     "choices": {
                       "type": "array",
                       "items": {
