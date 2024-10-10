@@ -416,7 +416,7 @@
                   },
                   "base_model": {
                     "type": "string",
-                    "description": "The name of the base model whose output will be styled. Options: 'gpt-4o', 'gpt-4o-2024-05-13', 'gpt-4o-2024-08-06', 'claude-3-5-sonnet-20240620', 'claude-3-opus-20240229'.",
+                    "description": "The name of the base model whose output will be styled. Options: 'gpt-4o', 'gpt-4o-2024-05-13', 'gpt-4o-2024-08-06', 'claude-3-5-sonnet-20240620', 'claude-3-opus-20240229', 'other'. Use 'other' for any other model.",
                     "example": "gpt-4o"
                   },
                   "training_files": {
@@ -434,10 +434,20 @@
                     "example": "custom-model-name"
                   },
                   "num_examples": {
-                    "type": "integer",
-                    "description": "The number of training examples to use for training. Higher numbers increase quality, but also increase cost.",
+                    "oneOf": [
+                      {
+                        "type": "integer",
+                        "description": "The number of training examples to use for training. Higher numbers increase quality, but also increase cost."
+                      },
+                      {
+                        "type": "string",
+                        "enum": ["auto"],
+                        "description": "Automatically determine the number of training examples."
+                      }
+                    ],
+                    "description": "The number of training examples to use for training. Can be an integer or 'auto'. Higher numbers increase quality, but also increase cost.",
                     "example": 200,
-                    "default": 200
+                    "default": "auto"
                   },
                   "maintain_length": {
                     "type": "boolean",
