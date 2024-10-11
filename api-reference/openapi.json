@@ -429,7 +429,7 @@
                   },
                   "suffix": {
                     "type": "string",
-                    "description": "A string of up to 36 characters that will be added to your fine-tuned model name. For example, a suffix of 'custom-model-name' would produce a model name like 'ftm:llama-3.1-70b:custom-model-name:0b5ace7e-ffb2-43cf-8a4d-0af17bc2b1d1'.",
+                    "description": "A string of up to 16 characters that will be added to your fine-tuned model name. For example, a suffix of 'custom-model-name' would produce a model name like 'ftm:llama-3.1-70b:custom-model-name:0b5ace7e-ffb2-43cf-8a4d-0af17bc2b1d1'.",
                     "nullable": true,
                     "example": "custom-model-name"
                   },
